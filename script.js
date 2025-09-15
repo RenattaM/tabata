@@ -1,4 +1,3 @@
-// --- Utils ---
 function parseDuration(input) {
   const s = String(input).trim().toLowerCase();
   if (!s) return 0;
@@ -22,34 +21,30 @@ function fmt(sec) {
   const s = sec % 60;
   return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
 }
-
-// --- DOM refs ---
 const els = {
-  workInput: document.getElementById("workInput"),
-  restExInput: document.getElementById("restExInput"),
-  exCountInput: document.getElementById("exCountInput"),
-  roundsInput: document.getElementById("roundsInput"),
-  restRoundInput: document.getElementById("restRoundInput"),
-  startBtn: document.getElementById("startBtn"),
-  pauseBtn: document.getElementById("pauseBtn"),
-  resetBtn: document.getElementById("resetBtn"),
-  bigTime: document.getElementById("bigTime"),
-  phaseBadge: document.getElementById("phaseBadge"),
-  progressBar: document.getElementById("progressBar"),
-  roundNow: document.getElementById("roundNow"),
-  roundTotal: document.getElementById("roundTotal"),
-  exNow: document.getElementById("exNow"),
-  exTotal: document.getElementById("exTotal"),
-  nextUp: document.getElementById("nextUp"),
+  workInput: workInput,
+  restExInput: restExInput,
+  exCountInput: exCountInput,
+  roundsInput: roundsInput,
+  restRoundInput: restRoundInput,
+  startBtn: startBtn,
+  pauseBtn: pauseBtn,
+  resetBtn: resetBtn,
+  bigTime: bigTime,
+  phaseBadge: phaseBadge,
+  progressBar: progressBar,
+  roundNow: roundNow,
+  roundTotal: roundTotal,
+  exNow: exNow,
+  exTotal: exTotal,
+  nextUp: nextUp,
   fields: {
     work: document.querySelector('.field[data-field="work"]'),
     restEx: document.querySelector('.field[data-field="restEx"]'),
     restRound: document.querySelector('.field[data-field="restRound"]'),
   },
-  beepToggle: document.getElementById("beepToggle"),
+  beepToggle: beepToggle,
 };
-
-// --- State ---
 let timer = null,
   state = null,
   remaining = 0,
@@ -58,20 +53,23 @@ let timer = null,
   paused = false,
   totalPhase = 0,
   audioCtx = null;
-
 function setPhase(p) {
   phase = p;
-  els.fields.work.classList.toggle("active", p === "work");
-  els.fields.restEx.classList.toggle("active", p === "restEx");
-  els.fields.restRound.classList.toggle("active", p === "restRound");
+  els.fields.work.classList.toggle("active", phase === "work");
+  els.fields.restEx.classList.toggle("active", phase === "restEx");
+  els.fields.restRound.classList.toggle("active", phase === "restRound");
+  if (p === "work") document.body.style.backgroundColor = "var(--green)";
+  else if (p === "restEx") document.body.style.backgroundColor = "var(--red)";
+  else if (p === "restRound")
+    document.body.style.backgroundColor = "var(--orange)";
+  else document.body.style.backgroundColor = "var(--bg)";
   let label = "Připraveno";
-  if (p === "work") label = "CVIČÍM";
-  else if (p === "restEx") label = "PAUZA MEZI CVIČENÍMI";
-  else if (p === "restRound") label = "PAUZA MEZI KOLY";
-  else if (p === "finished") label = "HOTOVO ✔";
+  if (phase === "work") label = "CVIČÍM";
+  else if (phase === "restEx") label = "PAUZA MEZI CVIČENÍMI";
+  else if (phase === "restRound") label = "PAUZA MEZI KOLY";
+  else if (phase === "finished") label = "HOTOVO ✔";
   els.phaseBadge.textContent = label;
 }
-
 function beep(type = "tick") {
   if (!els.beepToggle || !els.beepToggle.checked) return;
   try {
@@ -91,7 +89,6 @@ function beep(type = "tick") {
     o.stop(now + 0.2);
   } catch (e) {}
 }
-
 function updateUI() {
   els.bigTime.textContent = fmt(remaining);
   const pct = totalPhase > 0 ? (1 - remaining / totalPhase) * 100 : 0;
@@ -110,7 +107,6 @@ function updateUI() {
     els.nextUp.textContent = next;
   }
 }
-
 function step() {
   if (paused) return;
   const now = Date.now();
@@ -126,7 +122,6 @@ function step() {
     timer = setTimeout(step, 250);
   }
 }
-
 function startPhase(p, sec) {
   setPhase(p);
   totalPhase = Math.max(0, sec | 0);
@@ -139,7 +134,6 @@ function startPhase(p, sec) {
   }
   timer = setTimeout(step, 250);
 }
-
 function advance() {
   if (!state) return;
   if (phase === "work") {
@@ -167,7 +161,6 @@ function advance() {
     startPhase("work", state.work);
   }
 }
-
 function finish() {
   setPhase("finished");
   els.bigTime.textContent = "00:00";
@@ -176,7 +169,6 @@ function finish() {
   els.pauseBtn.disabled = true;
   els.startBtn.disabled = false;
 }
-
 function start() {
   const work = parseDuration(els.workInput.value);
   const restEx = parseDuration(els.restExInput.value);
@@ -203,7 +195,6 @@ function start() {
   beep("start");
   startPhase("work", work);
 }
-
 function pause() {
   if (!state || phase === "finished") return;
   paused = !paused;
@@ -215,7 +206,6 @@ function pause() {
     if (timer) clearTimeout(timer);
   }
 }
-
 function reset() {
   if (timer) clearTimeout(timer);
   state = null;
@@ -236,11 +226,9 @@ function reset() {
   els.resetBtn.disabled = true;
   els.pauseBtn.textContent = "Pauza";
 }
-
-// Handlery
-els.startBtn.addEventListener("click", start);
-els.pauseBtn.addEventListener("click", pause);
-els.resetBtn.addEventListener("click", reset);
+startBtn.addEventListener("click", start);
+pauseBtn.addEventListener("click", pause);
+resetBtn.addEventListener("click", reset);
 window.addEventListener("keydown", (e) => {
   if (e.key === " ") {
     e.preventDefault();
