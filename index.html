@@ -1,0 +1,115 @@
+Ulož celý tento soubor jako `tabata-single.html` a otevři v prohlížeči
+dvojklikem. ```html
+<!DOCTYPE html>
+<html lang="cs">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tabata Timer (single-file)</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="header">
+        <h1>Tabata Timer</h1>
+        <p class="sub">Jednoduchý intervalový časovač – práce / pauzy / kola</p>
+      </header>
+
+      <section class="panel" id="config">
+        <form id="configForm" autocomplete="off" onsubmit="return false;">
+          <div class="fields">
+            <label class="field" data-field="work">
+              <span>Čas cvičení</span>
+              <input
+                id="workInput"
+                type="text"
+                inputmode="numeric"
+                placeholder="40s"
+                value="40s"
+              />
+            </label>
+            <label class="field" data-field="restEx">
+              <span>Pauza mezi cvičeními</span>
+              <input
+                id="restExInput"
+                type="text"
+                inputmode="numeric"
+                placeholder="20s"
+                value="20s"
+              />
+            </label>
+            <label class="field">
+              <span>Počet cvičení v kole</span>
+              <input
+                id="exCountInput"
+                type="number"
+                min="1"
+                max="50"
+                step="1"
+                value="7"
+              />
+            </label>
+            <label class="field">
+              <span>Počet kol</span>
+              <input
+                id="roundsInput"
+                type="number"
+                min="1"
+                max="50"
+                step="1"
+                value="3"
+              />
+            </label>
+            <label class="field" data-field="restRound">
+              <span>Pauza mezi koly</span>
+              <input
+                id="restRoundInput"
+                type="text"
+                inputmode="numeric"
+                placeholder="1m"
+                value="1m"
+              />
+            </label>
+          </div>
+          <div class="actions">
+            <button type="button" id="startBtn" class="btn primary">
+              Start
+            </button>
+            <button type="button" id="pauseBtn" class="btn" disabled>
+              Pauza
+            </button>
+            <button type="button" id="resetBtn" class="btn" disabled>
+              Reset
+            </button>
+            <label class="sound"
+              ><input type="checkbox" id="beepToggle" checked />Zvukové
+              pípnutí</label
+            >
+          </div>
+        </form>
+      </section>
+
+      <section class="display" aria-live="polite">
+        <div class="status">
+          <div class="badge" id="phaseBadge">Připraveno</div>
+          <div class="progressText">
+            Kolo <span id="roundNow">0</span>/<span id="roundTotal">0</span> ·
+            Cvik <span id="exNow">0</span>/<span id="exTotal">0</span>
+          </div>
+        </div>
+        <div class="timer" id="bigTime">00:00</div>
+        <div class="next" id="nextUp">–</div>
+        <div class="barWrap">
+          <div class="bar" id="progressBar" style="width: 0%"></div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <p><kbd>Space</kbd> Pauza/Resume · <kbd>R</kbd> Reset</p>
+      </footer>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
+```
